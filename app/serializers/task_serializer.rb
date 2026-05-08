@@ -5,6 +5,6 @@ class TaskSerializer < ActiveModel::Serializer
   has_one :recurrence_rule
 
   attribute :occurrences do
-    options[:occurrences] || []
+    instance_options[:occurrences] || []
   end
 end

@@ -12,10 +12,7 @@ class TasksController < ApplicationController
     render json: tasks.map { |task|
       occurrences = recurrence_for(task, from, to)
 
-      TaskSerializer.new(
-        task,
-        { occurrences: occurrences }
-      ).as_json
+      TaskSerializer.new(task, { occurrences: occurrences }).as_json
     }
   end
 
@@ -25,17 +22,14 @@ class TasksController < ApplicationController
 
     occurrences = recurrence_for(@task, from, to)
 
-    render json: TaskSerializer.new(
-      @task,
-      { occurrences: occurrences }
-    )
+    render json: @task, serializer: TaskSerializer, occurrences: occurrences
   end
 
   def create
     task = Task.new(task_params)
 
     if task.save
-      render json: TaskSerializer.new(task), status: :created
+      render json: task, serializer: TaskSerializer, status: :created
     else
       render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
     end
@@ -43,7 +37,7 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      render json: TaskSerializer.new(@task)
+      render json: @task, serializer: TaskSerializer, status: :ok
     else
       render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
     end
