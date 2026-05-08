@@ -17,7 +17,7 @@ RSpec.describe 'Tasks API', type: :request do
         let(:to)   { '2026-05-07' }
 
         run_test! do |response|
-          json = JSON.parse(response.body)
+          json = JSON.parse(response.body)["tasks"]
 
           expect(response.status).to eq(200)
           expect(json).to be_an(Array)

@@ -9,11 +9,9 @@ class TasksController < ApplicationController
 
     tasks = apply_tag_filter(tasks)
 
-    render json: tasks.map { |task|
-      occurrences = recurrence_for(task, from, to)
-
-      TaskSerializer.new(task, { occurrences: occurrences }).as_json
-    }
+    render json: tasks,
+           each_serializer: TaskSerializer,
+           occurrences: occurrences_map(tasks, from, to)
   end
 
   def show
@@ -22,24 +20,31 @@ class TasksController < ApplicationController
 
     occurrences = recurrence_for(@task, from, to)
 
-    render json: @task, serializer: TaskSerializer, occurrences: occurrences
+    render json: @task,
+           serializer: TaskSerializer,
+           occurrences: occurrences
   end
 
   def create
     task = Task.new(task_params)
 
     if task.save
-      render json: task, serializer: TaskSerializer, status: :created
+      render json: task,
+             serializer: TaskSerializer,
+             status: :created
     else
-      render json: { errors: task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: task.errors.full_messages },
+             status: :unprocessable_entity
     end
   end
 
   def update
     if @task.update(task_params)
-      render json: @task, serializer: TaskSerializer, status: :ok
+      render json: @task,
+             serializer: TaskSerializer
     else
-      render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @task.errors.full_messages },
+             status: :unprocessable_entity
     end
   end
 
@@ -66,6 +71,12 @@ class TasksController < ApplicationController
     Tasks::RecurrenceEngine
       .new(task: task, from: from, to: to)
       .call
+  end
+
+  def occurrences_map(tasks, from, to)
+    tasks.index_with do |task|
+      recurrence_for(task, from, to)
+    end
   end
 
   def apply_tag_filter(scope)
