@@ -124,7 +124,7 @@ paths:
         '204':
           description: task deleted
 servers:
-- url: https://{defaultHost}
+- url: http://localhost:3000
   variables:
     defaultHost:
       default: www.example.com

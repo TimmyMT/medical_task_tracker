@@ -32,7 +32,9 @@ RSpec.describe 'TaskOccurrences API', type: :request do
         let(:id) { occurrence.id }
         let(:task_occurrence) do
           {
-            status: 'completed'
+            task_occurrence: {
+              status: 'completed'
+            }
           }
         end
 

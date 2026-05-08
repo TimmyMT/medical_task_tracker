@@ -2,8 +2,17 @@ class TaskOccurrencesController < ApplicationController
   def update
     occurrence = TaskOccurrence.find(params[:id])
 
-    occurrence.update!(status: params[:status])
+    if occurrence.update(task_occurrence_params)
+      render json: occurrence
+    else
+      render json: { errors: occurrence.errors.full_messages },
+             status: :unprocessable_entity
+    end
+  end
 
-    render json: occurrence
+  private
+
+  def task_occurrence_params
+    params.require(:task_occurrence).permit(:status)
   end
 end
