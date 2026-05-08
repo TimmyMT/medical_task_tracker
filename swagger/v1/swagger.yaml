@@ -4,6 +4,34 @@ info:
   title: API V1
   version: v1
 paths:
+  "/task_occurrences/{id}":
+    patch:
+      summary: Update task occurrence status
+      tags:
+      - TaskOccurrences
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: task occurrence updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                  - pending
+                  - completed
+                  - cancelled
+              required:
+              - status
   "/tasks":
     get:
       summary: List tasks with recurrence
