@@ -1,0 +1,102 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/tasks":
+    get:
+      summary: List tasks with recurrence
+      tags:
+      - Tasks
+      parameters:
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: to
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tag_ids
+        in: query
+        required: false
+        items:
+          type: integer
+        schema:
+          type: array
+      responses:
+        '200':
+          description: tasks found
+    post:
+      summary: Create task
+      tags:
+      - Tasks
+      parameters: []
+      responses:
+        '201':
+          description: task created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    recurrence_rule_id:
+                      type: integer
+                  required:
+                  - title
+  "/tasks/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: Show task
+      tags:
+      - Tasks
+      responses:
+        '200':
+          description: task found
+    patch:
+      summary: Update task
+      tags:
+      - Tasks
+      parameters: []
+      responses:
+        '200':
+          description: task updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                task:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+    delete:
+      summary: Delete task
+      tags:
+      - Tasks
+      responses:
+        '204':
+          description: task deleted
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
