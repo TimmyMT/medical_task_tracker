@@ -9,7 +9,7 @@ class TaskOccurrence < ApplicationRecord
 
   validates :date, presence: true
 
-  scope :for_date_range, ->(from, to) {
+  scope :for_date_range, lambda { |from, to|
     where(date: from..to)
   }
 end

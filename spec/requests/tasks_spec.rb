@@ -17,7 +17,7 @@ RSpec.describe 'Tasks API', type: :request do
         let(:to)   { '2026-05-07' }
 
         run_test! do |response|
-          json = JSON.parse(response.body)["tasks"]
+          json = JSON.parse(response.body)['tasks']
 
           expect(response.status).to eq(200)
           expect(json).to be_an(Array)
@@ -59,10 +59,10 @@ RSpec.describe 'Tasks API', type: :request do
         end
 
         run_test! do |response|
-          json = JSON.parse(response.body)["task"]
+          json = JSON.parse(response.body)['task']
 
           expect(response.status).to eq(201)
-          expect(json["title"]).to eq('New task')
+          expect(json['title']).to eq('New task')
           expect(json).to have_key('id')
         end
       end
@@ -81,7 +81,7 @@ RSpec.describe 'Tasks API', type: :request do
         let(:id) { task_record.id }
 
         run_test! do |response|
-          json = JSON.parse(response.body)["task"]
+          json = JSON.parse(response.body)['task']
 
           expect(response.status).to eq(200)
           expect(json['id']).to eq(task_record.id)
@@ -120,7 +120,7 @@ RSpec.describe 'Tasks API', type: :request do
         end
 
         run_test! do |response|
-          json = JSON.parse(response.body)["task"]
+          json = JSON.parse(response.body)['task']
 
           expect(response.status).to eq(200)
           expect(json['title']).to eq('Updated title')

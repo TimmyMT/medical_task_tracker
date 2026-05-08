@@ -11,6 +11,6 @@ class CreateTaskOccurrences < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :task_occurrences, [:task_id, :date], unique: true
+    add_index :task_occurrences, %i[task_id date], unique: true
   end
 end

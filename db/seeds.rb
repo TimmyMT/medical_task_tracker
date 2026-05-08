@@ -8,7 +8,6 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 
-
-Tag.find_or_create_by!(name: "отчетность") { |t| t.system = true }
-Tag.find_or_create_by!(name: "операции") { |t| t.system = true }
-Tag.find_or_create_by!(name: "звонок") { |t| t.system = true }
+Tag.find_or_create_by!(name: 'отчетность') { |t| t.system = true }
+Tag.find_or_create_by!(name: 'операции') { |t| t.system = true }
+Tag.find_or_create_by!(name: 'звонок') { |t| t.system = true }

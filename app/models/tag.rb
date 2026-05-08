@@ -10,16 +10,16 @@ class Tag < ApplicationRecord
   private
 
   def prevent_system_modification
-    if system?
-      errors.add(:base, "System tags cannot be modified")
-      throw(:abort)
-    end
+    return unless system?
+
+    errors.add(:base, 'System tags cannot be modified')
+    throw(:abort)
   end
 
   def prevent_system_deletion
-    if system?
-      errors.add(:base, "System tags cannot be deleted")
-      throw(:abort)
-    end
+    return unless system?
+
+    errors.add(:base, 'System tags cannot be deleted')
+    throw(:abort)
   end
 end

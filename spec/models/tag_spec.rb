@@ -21,9 +21,9 @@ RSpec.describe Tag, type: :model do
     end
 
     it 'prevents update of system tags' do
-      tag = create(:tag, system: true, name: "old")
+      tag = create(:tag, system: true, name: 'old')
 
-      tag.update(name: "new")
+      tag.update(name: 'new')
 
       expect(tag.errors[:base]).not_to be_empty
     end

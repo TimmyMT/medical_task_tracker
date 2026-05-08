@@ -6,10 +6,9 @@ RSpec.describe TaskOccurrence, type: :model do
       task = create(:task)
 
       occurrence = build(:task_occurrence,
-        task: task,
-        date: Date.today,
-        status: :pending
-      )
+                         task: task,
+                         date: Date.today,
+                         status: :pending)
 
       expect(occurrence).to be_valid
     end
@@ -18,10 +17,9 @@ RSpec.describe TaskOccurrence, type: :model do
       task = create(:task)
 
       occurrence = build(:task_occurrence,
-        task: task,
-        date: nil,
-        status: :pending
-      )
+                         task: task,
+                         date: nil,
+                         status: :pending)
 
       expect(occurrence).not_to be_valid
       expect(occurrence.errors[:date]).not_to be_empty
@@ -40,10 +38,9 @@ RSpec.describe TaskOccurrence, type: :model do
       task = create(:task)
 
       occurrence = create(:task_occurrence,
-        task: task,
-        date: Date.today,
-        status: :pending
-      )
+                          task: task,
+                          date: Date.today,
+                          status: :pending)
 
       expect(occurrence.pending?).to be true
 
@@ -57,19 +54,16 @@ RSpec.describe TaskOccurrence, type: :model do
       task = create(:task)
 
       occurrence1 = create(:task_occurrence,
-        task: task,
-        date: Date.new(2026, 5, 1)
-      )
+                           task: task,
+                           date: Date.new(2026, 5, 1))
 
       occurrence2 = create(:task_occurrence,
-        task: task,
-        date: Date.new(2026, 5, 10)
-      )
+                           task: task,
+                           date: Date.new(2026, 5, 10))
 
       occurrence3 = create(:task_occurrence,
-        task: task,
-        date: Date.new(2026, 6, 1)
-      )
+                           task: task,
+                           date: Date.new(2026, 6, 1))
 
       result = TaskOccurrence.for_date_range(
         Date.new(2026, 5, 1),

@@ -21,63 +21,60 @@ RSpec.describe Tasks::RecurrenceEngine do
 
       it 'generates daily occurrences' do
         expect(result_dates).to eq([
-          Date.new(2026, 5, 1),
-          Date.new(2026, 5, 2),
-          Date.new(2026, 5, 3),
-          Date.new(2026, 5, 4),
-          Date.new(2026, 5, 5)
-        ])
+                                     Date.new(2026, 5, 1),
+                                     Date.new(2026, 5, 2),
+                                     Date.new(2026, 5, 3),
+                                     Date.new(2026, 5, 4),
+                                     Date.new(2026, 5, 5)
+                                   ])
       end
     end
 
     context 'when rule is monthly' do
       let(:rule) do
         create(:recurrence_rule,
-          rule_type: :monthly,
-          days_of_month: [1, 3]
-        )
+               rule_type: :monthly,
+               days_of_month: [1, 3])
       end
 
       it 'generates occurrences only for selected days' do
         expect(result_dates).to eq([
-          Date.new(2026, 5, 1),
-          Date.new(2026, 5, 3)
-        ])
+                                     Date.new(2026, 5, 1),
+                                     Date.new(2026, 5, 3)
+                                   ])
       end
     end
 
     context 'when rule is specific dates' do
       let(:rule) do
         create(:recurrence_rule,
-          rule_type: :specific_dates,
-          specific_dates: [
-            Date.new(2026, 5, 1),
-            Date.new(2026, 5, 10)
-          ]
-        )
+               rule_type: :specific_dates,
+               specific_dates: [
+                 Date.new(2026, 5, 1),
+                 Date.new(2026, 5, 10)
+               ])
       end
 
       it 'returns only dates inside range' do
         expect(result_dates).to eq([
-          Date.new(2026, 5, 1)
-        ])
+                                     Date.new(2026, 5, 1)
+                                   ])
       end
     end
 
     context 'when rule is odd days' do
       let(:rule) do
         create(:recurrence_rule,
-          rule_type: :odd_even,
-          odd_even_type: :odd
-        )
+               rule_type: :odd_even,
+               odd_even_type: :odd)
       end
 
       it 'generates only odd days' do
         expect(result_dates).to eq([
-          Date.new(2026, 5, 1),
-          Date.new(2026, 5, 3),
-          Date.new(2026, 5, 5)
-        ])
+                                     Date.new(2026, 5, 1),
+                                     Date.new(2026, 5, 3),
+                                     Date.new(2026, 5, 5)
+                                   ])
       end
     end
 

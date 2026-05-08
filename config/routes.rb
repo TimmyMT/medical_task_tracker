@@ -3,4 +3,5 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
 
   resources :tasks
+  resources :task_occurrences, only: [:update]
 end
