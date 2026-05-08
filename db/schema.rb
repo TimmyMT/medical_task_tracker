@@ -10,9 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_05_08_154701) do
+ActiveRecord::Schema[7.1].define(version: 2026_05_08_155836) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "recurrence_rules", force: :cascade do |t|
+    t.integer "rule_type", null: false
+    t.integer "interval"
+    t.integer "odd_even_type"
+    t.integer "days_of_month", default: [], array: true
+    t.date "specific_dates", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "task_occurrences", force: :cascade do |t|
+    t.bigint "task_id", null: false
+    t.date "date", null: false
+    t.integer "status", default: 0, null: false
+    t.boolean "overridden", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["task_id", "date"], name: "index_task_occurrences_on_task_id_and_date", unique: true
+    t.index ["task_id"], name: "index_task_occurrences_on_task_id"
+  end
 
   create_table "tasks", force: :cascade do |t|
     t.string "title", null: false
@@ -21,4 +42,5 @@ ActiveRecord::Schema[7.1].define(version: 2026_05_08_154701) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "task_occurrences", "tasks"
 end
