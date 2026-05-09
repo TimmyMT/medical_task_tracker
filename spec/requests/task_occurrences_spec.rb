@@ -39,7 +39,7 @@ RSpec.describe 'TaskOccurrences API', type: :request do
         end
 
         run_test! do |response|
-          json = JSON.parse(response.body)
+          json = JSON.parse(response.body)["task_occurrence"]
 
           expect(response.status).to eq(200)
 
