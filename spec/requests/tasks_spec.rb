@@ -126,6 +126,48 @@ RSpec.describe 'Tasks API', type: :request do
           expect(json['title']).to eq('Updated title')
         end
       end
+
+      response '200', 'added tag' do
+        let(:task_record) { create(:task, title: 'Old title') }
+        let(:id) { task_record.id }
+        let!(:tag) { create(:tag, name: 'операции') }
+
+        let(:task) do
+          {
+            task: {
+              tag_ids: [tag.id]
+            }
+          }
+        end
+
+        run_test! do |response|
+          json = JSON.parse(response.body)['task']
+
+          expect(response.status).to eq(200)
+          expect(json['tags']).not_to be_empty
+          expect(json['tags'].first['id']).to eq(tag.id)
+        end
+      end
+
+      response '200', 'delete tag' do
+        let(:task_record) { create(:task, title: 'Old title') }
+        let(:id) { task_record.id }
+
+        let(:task) do
+          {
+            task: {
+              tag_ids: []
+            }
+          }
+        end
+
+        run_test! do |response|
+          json = JSON.parse(response.body)['task']
+
+          expect(response.status).to eq(200)
+          expect(json['tags']).to be_empty
+        end
+      end
     end
 
     delete 'Delete task' do

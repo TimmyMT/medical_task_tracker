@@ -11,6 +11,8 @@ class Tasks::RecurrenceEngine
   def call
     return [] unless rule
 
+    preload_occurrences!
+
     case rule.rule_type.to_sym
     when :daily
       generate_daily
@@ -27,16 +29,22 @@ class Tasks::RecurrenceEngine
 
   private
 
-  attr_reader :task, :rule, :from, :to
+  attr_reader :task, :rule, :from, :to, :existing_occurrences
+
+  def preload_occurrences!
+    @existing_occurrences =
+      TaskOccurrence
+        .where(task: task, date: from..to)
+        .index_by(&:date)
+  end
 
   def generate_daily
     step = rule.interval || 1
-    index = 0
 
-    (from..to).map do |date|
-      occurrence = build_occurrence(date) if index % step == 0
-      index += 1
-      occurrence
+    (from..to).each_with_index.map do |date, index|
+      next unless (index % step).zero?
+
+      build_occurrence(date)
     end.compact
   end
 
@@ -45,7 +53,9 @@ class Tasks::RecurrenceEngine
 
     (from..to).select do |date|
       days.include?(date.day)
-    end.map { |date| build_occurrence(date) }
+    end.map do |date|
+      build_occurrence(date)
+    end
   end
 
   def generate_specific_dates
@@ -56,16 +66,14 @@ class Tasks::RecurrenceEngine
 
   def generate_odd_even
     (from..to).select do |date|
-      if rule.odd?
-        date.day.odd?
-      else
-        date.day.even?
-      end
-    end.map { |date| build_occurrence(date) }
+      rule.odd? ? date.day.odd? : date.day.even?
+    end.map do |date|
+      build_occurrence(date)
+    end
   end
 
   def build_occurrence(date)
-    existing = TaskOccurrence.find_by(task: task, date: date)
+    existing = existing_occurrences[date]
 
     return existing if existing
 
