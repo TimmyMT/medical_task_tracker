@@ -1,24 +1,196 @@
-# README
+# Medical Task Tracker API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Тестовое задание на Ruby on Rails API.
 
-Things you may want to cover:
+Приложение представляет собой API для управления задачами медицинского персонала с поддержкой повторяющихся задач, тегов и независимого состояния отдельных экземпляров задач.
 
-* Ruby version
+---
 
-* System dependencies
+# Стек
 
-* Configuration
+- Ruby 3.2.5
+- Rails 7.1.5
+- PostgreSQL
+- RSpec
+- Rswag / Swagger
+- Docker / Docker Compose
 
-* Database creation
+---
 
-* Database initialization
+# Основная идея приложения
 
-* How to run the test suite
+Система разделяет:
 
-* Services (job queues, cache servers, search engines, etc.)
+- шаблон задачи;
+- правило повторения;
+- конкретное выпадение задачи на определённую дату.
 
-* Deployment instructions
+Это позволяет:
+- не хранить бесконечное количество записей в БД;
+- динамически генерировать задачи на нужный диапазон дат;
+- хранить независимый статус каждого экземпляра задачи.
 
-* ...
+---
+
+# Архитектура
+
+## Task
+
+Основная сущность задачи.
+
+Содержит:
+- title
+- description
+- recurrence_rule_id
+
+---
+
+## RecurrenceRule
+
+Правило повторяемости задачи.
+
+Поддерживаемые типы:
+- daily — каждый n-й день
+- monthly — определённые дни месяца
+- specific_dates — конкретные даты
+- odd_even — чётные/нечётные дни
+
+---
+
+## TaskOccurrence
+
+Конкретное выпадение задачи на определённую дату.
+
+Используется для:
+- хранения статуса;
+- override поведения повторяющейся задачи;
+- независимого состояния экземпляра.
+
+---
+
+## Tag
+
+Теги задач.
+
+Поддерживается связь many-to-many:
+- у задачи много тегов;
+- один тег может принадлежать множеству задач.
+
+Системные теги:
+- отчетность
+- операции
+- звонок
+
+Системные теги нельзя изменять или удалять.
+
+---
+
+# Решение проблемы бесконечности
+
+Повторяющиеся задачи НЕ создаются в базе данных заранее.
+
+Вместо этого используется сервис:
+
+```ruby
+Tasks::RecurrenceEngine
+```
+
+Он динамически генерирует задачи только для запрошенного диапазона дат (`from..to`).
+
+Это позволяет избежать создания миллионов записей для бесконечных задач.
+
+---
+
+# Независимое состояние экземпляров
+
+Каждый экземпляр повторяющейся задачи имеет собственный статус.
+
+Например:
+- задача за сегодня может быть completed;
+- задача за завтра остаётся pending.
+
+Для этого используется модель:
+
+```ruby
+TaskOccurrence
+```
+
+---
+
+# API Documentation
+
+Swagger UI доступен по адресу:
+
+```text
+http://localhost:3000/api-docs
+```
+
+---
+
+# Запуск приложения через Docker
+
+## 1. Склонировать проект
+
+```bash
+git clone <repository_url>
+cd medical_task_tracker
+```
+
+---
+
+## 2. Запустить приложение
+
+```bash
+docker compose up --build
+```
+
+---
+
+После запуска будут автоматически выполнены:
+- создание БД;
+- миграции;
+- seeds;
+- запуск Rails сервера.
+
+---
+
+# Доступ к приложению
+
+API:
+
+```text
+http://localhost:3000
+```
+
+Swagger:
+
+```text
+http://localhost:3000/api-docs
+```
+
+---
+
+# Остановка приложения
+
+```bash
+docker compose down
+```
+
+---
+
+# Запуск тестов
+
+## Через Docker
+
+```bash
+docker compose exec web bundle exec rspec
+```
+
+---
+
+## Генерация Swagger документации
+
+```bash
+RAILS_ENV=test bundle exec rswag spec:swaggerize
+```
+

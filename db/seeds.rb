@@ -1,20 +1,12 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
 puts 'Creating system tags...'
 
-[
+system_tags = [
   'отчетность',
   'операции',
   'звонок'
-].each do |name|
+]
+
+system_tags.each do |name|
   Tag.find_or_create_by!(name: name) do |tag|
     tag.system = true
   end
@@ -52,11 +44,15 @@ even_days_rule = RecurrenceRule.find_or_create_by!(
 
 puts 'Creating demo tasks...'
 
-task = Task.find_or_create_by!(title: 'Ежедневный обход') do |t|
-  t.description = 'Проверить пациентов'
-  t.recurrence_rule = daily_rule
+daily_task = Task.find_or_create_by!(title: 'Ежедневный обход') do |task|
+  task.description = 'Проверить пациентов'
+  task.recurrence_rule = daily_rule
 end
 
-task.tags << Tag.find_by(name: 'операции')
+operations_tag = Tag.find_by!(name: 'операции')
+
+unless daily_task.tags.exists?(operations_tag.id)
+  daily_task.tags << operations_tag
+end
 
 puts 'Seeds completed!'

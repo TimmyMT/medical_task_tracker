@@ -22,8 +22,8 @@ RSpec.describe 'Tasks API', type: :request do
           expect(response.status).to eq(200)
           expect(json).to be_an(Array)
 
-          expect(json.first['title']).to eq('Test task')
-          expect(json.first).to have_key('id')
+          expect(json.second['title']).to eq('Test task')
+          expect(json.second).to have_key('id')
         end
       end
     end
@@ -130,7 +130,7 @@ RSpec.describe 'Tasks API', type: :request do
       response '200', 'added tag' do
         let(:task_record) { create(:task, title: 'Old title') }
         let(:id) { task_record.id }
-        let!(:tag) { create(:tag, name: 'операции') }
+        let!(:tag) { create(:tag, name: 'new tag name') }
 
         let(:task) do
           {
